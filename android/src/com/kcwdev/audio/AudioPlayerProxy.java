@@ -3,7 +3,6 @@ package com.kcwdev.audio;
 import java.io.IOException;
 
 import org.appcelerator.kroll.KrollDict;
-import org.appcelerator.kroll.KrollInvocation;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiC;
@@ -40,14 +39,14 @@ public class AudioPlayerProxy extends KrollProxy
 		super(tiContext);
 
 		tiContext.addOnLifecycleEventListener(this);
-		setProperty("volume", 0.5, true);
+		setProperty("volume", 0.5);
 	}
 
 	@Override
 	public void handleCreationDict(KrollDict options) {
 		super.handleCreationDict(options);
 		if (options.containsKey(TiC.PROPERTY_URL)) {
-			setProperty(TiC.PROPERTY_URL, getTiContext().resolveUrl(null, TiConvert.toString(options, TiC.PROPERTY_URL)));
+			setProperty(TiC.PROPERTY_URL, resolveUrl(null, TiConvert.toString(options, TiC.PROPERTY_URL)));
 		}
 		if (options.containsKey(TiC.PROPERTY_ALLOW_BACKGROUND)) {
 			setProperty(TiC.PROPERTY_ALLOW_BACKGROUND, options.get(TiC.PROPERTY_ALLOW_BACKGROUND));
@@ -64,13 +63,14 @@ public class AudioPlayerProxy extends KrollProxy
 	}
 
 	@Kroll.setProperty @Kroll.method
-	public void setUrl(KrollInvocation kroll, String url) {
+	public void setUrl(String url) {
 		if (url != null) {
-			setProperty(TiC.PROPERTY_URL, kroll.getTiContext().resolveUrl(null, TiConvert.toString(url)));			
+			setProperty(TiC.PROPERTY_URL, resolveUrl(null, TiConvert.toString(url)));
 			release();
 			getSound();
 		}
 	}
+
 
 	@Kroll.getProperty @Kroll.method
 	public boolean isPlaying() {

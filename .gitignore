@@ -2,4 +2,8 @@ tmp
 bin
 build
 *.zip
+*.class
+*.pyc
+*.pyo
+.DS_Store
 .apt_generated

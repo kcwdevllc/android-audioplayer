@@ -88,7 +88,7 @@ public class MediaPlayerWrapper
 			mp = new MediaPlayer();
 			String url = TiConvert.toString(proxy.getProperty(TiC.PROPERTY_URL));
 			if (URLUtil.isAssetUrl(url)) {
-				Context context = proxy.getTiContext().getTiApp();
+				Context context = proxy.getActivity().getApplicationContext();
 				String path = url.substring(TiConvert.ASSET_URL.length());
 				AssetFileDescriptor afd = null;
 				try {
