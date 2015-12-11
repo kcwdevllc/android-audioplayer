@@ -507,6 +507,15 @@ public class MediaPlayerWrapper
 		proxy.fireEvent(EVENT_BUFFERING, data);
 	}
 
+	public int getCurrentPosition() {
+		if (mp != null) {
+			return mp.getCurrentPosition();
+		} else {
+			return 0;
+		}
+	}
+	
+	
 	private void startProgressTimer()
 	{
 		if (progressTimer == null) {

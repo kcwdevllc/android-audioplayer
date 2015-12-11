@@ -167,6 +167,16 @@ public class AudioPlayerProxy extends KrollProxy
 			s.setTime(position);
 		}		
 	}
+	
+	@Kroll.method
+	public int getCurrentPosition() {
+		MediaPlayerWrapper s = getSound();
+		if (s != null) {
+			return s.getCurrentPosition();
+		} else {
+			return 0;
+		}
+	}
 
 	protected MediaPlayerWrapper getSound()
 	{
