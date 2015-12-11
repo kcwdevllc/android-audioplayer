@@ -343,7 +343,7 @@ public class MediaPlayerWrapper
 		proxy.setProperty(TiC.PROPERTY_TIME, position);
 	}
 	
-	protected void setSpeakerphoneOn() {		
+	public void setSpeakerphoneOn() {		
 		if (mp != null) {
 			speakerphone = true; 
 			if(proxy.hasProperty("speakerphone")) {

@@ -72,6 +72,19 @@ public class AudioPlayerProxy extends KrollProxy
 		}
 	}
 
+	/*
+	 * Exposed to Titanium so the app can switch between speaker modes.
+	 * This updates the property of our instance then tells the mediaplayer wrapper to
+	 * update the running speaker mode.
+	 */
+	@Kroll.setProperty @Kroll.method
+	public void setSpeakerphoneOn(boolean on) {
+		setProperty("speakerphone", TiConvert.toBoolean(on));
+		MediaPlayerWrapper s = getSound();
+		if (s != null) {
+			s.setSpeakerphoneOn();
+		}
+	}
 
 	@Kroll.getProperty @Kroll.method
 	public boolean isPlaying() {
