@@ -11,8 +11,6 @@ import org.appcelerator.titanium.TiContext.OnLifecycleEvent;
 import org.appcelerator.titanium.util.Log;
 import org.appcelerator.titanium.util.TiConfig;
 import org.appcelerator.titanium.util.TiConvert;
-
-
 import android.app.Activity;
 
 @Kroll.proxy(creatableInModule=AdvancedAudioPlayerModule.class)
@@ -50,6 +48,9 @@ public class AudioPlayerProxy extends KrollProxy
 		}
 		if (options.containsKey(TiC.PROPERTY_ALLOW_BACKGROUND)) {
 			setProperty(TiC.PROPERTY_ALLOW_BACKGROUND, options.get(TiC.PROPERTY_ALLOW_BACKGROUND));
+		}
+		if(options.containsKey("speakerphone")) {
+			setProperty("speakerphone", TiConvert.toBoolean(options.get("speakerphone")));
 		}
 		if (DBG) {
 			Log.i(LCAT, "Creating audio player proxy for url: " + TiConvert.toString(getProperty("url")));

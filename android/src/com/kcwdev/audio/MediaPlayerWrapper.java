@@ -64,6 +64,7 @@ public class MediaPlayerWrapper
 	protected KrollProxy proxy;
 	protected MediaPlayer mp;
 	protected float volume;
+	protected boolean speakerphone;
 	protected boolean playOnResume;
 	protected boolean remote;
 	protected Timer progressTimer;
@@ -131,7 +132,9 @@ public class MediaPlayerWrapper
 					mp.setDataSource(url);
 				}
 			}
-
+			
+			setSpeakerphoneOn();
+			
 			mp.setLooping(looping);
 			mp.setOnCompletionListener(this);
 			mp.setOnErrorListener(this);
@@ -338,6 +341,21 @@ public class MediaPlayerWrapper
 		}
 
 		proxy.setProperty(TiC.PROPERTY_TIME, position);
+	}
+	
+	protected void setSpeakerphoneOn() {		
+		if (mp != null) {
+			speakerphone = true; 
+			if(proxy.hasProperty("speakerphone")) {
+				speakerphone = TiConvert.toBoolean(proxy.getProperty("speakerphone"));
+			}
+			
+			if(speakerphone) {
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			} else {
+				mp.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);				
+			}
+		}
 	}
 
 	private void setState(int state)

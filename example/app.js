@@ -34,7 +34,10 @@ if (Ti.Platform.name == "android") {
     //var audioUrl = "http://dir.xiph.org/listen/714343/listen.m3u";
     //var audioUrl = "http://dir.xiph.org/listen/714343/listen.xspf";
     var audioUrl2 = "";
-	var player = advaudioplayer.createAudioPlayer({url: audioUrl});
+	var player = advaudioplayer.createAudioPlayer({
+		url: audioUrl,
+		speakerphone: true
+	});
 
     player.addEventListener('change', function(e) { stateLabel.text = 'State: ' + e.state + ' ' + e.description; });
     player.addEventListener('progress', function(e) { progressLabel.text = 'Progress: ' + e.progress; });
