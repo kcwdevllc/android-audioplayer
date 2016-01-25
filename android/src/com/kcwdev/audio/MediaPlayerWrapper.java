@@ -345,6 +345,10 @@ public class MediaPlayerWrapper
 	
 	public void setSpeakerphoneOn() {		
 		if (mp != null) {
+			
+			Context context = proxy.getActivity().getBaseContext();
+			AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			
 			speakerphone = true; 
 			if(proxy.hasProperty("speakerphone")) {
 				speakerphone = TiConvert.toBoolean(proxy.getProperty("speakerphone"));
@@ -352,8 +356,18 @@ public class MediaPlayerWrapper
 			
 			if(speakerphone) {
 				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+					am.setMode(AudioManager.STREAM_MUSIC);
+					am.setSpeakerphoneOn(true);				     
+				}
+				
 			} else {
-				mp.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);				
+				mp.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+				if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+					am.setMode(AudioManager.MODE_IN_CALL);
+					am.setSpeakerphoneOn(false);
+				}
+				
 			}
 		}
 	}
