@@ -26,28 +26,8 @@ public class AdvancedAudioPlayerModule extends KrollModule
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
 	
-	public AdvancedAudioPlayerModule(TiContext tiContext) {
-		super(tiContext);
+	public AdvancedAudioPlayerModule() {
+		super();
 	}
-
-	// Methods
-	//@Kroll.method
-	//public String example() {
-	//	Log.d(LCAT, "example called");
-	//	return "hello world";
-	//}
-	
-	// Properties
-	//@Kroll.getProperty
-	//public String getExampleProp() {
-	//	Log.d(LCAT, "get example property");
-	//	return "hello world";
-	//}
-	
-	
-	//@Kroll.setProperty
-	//public void setExampleProp(String value) {
-	//	Log.d(LCAT, "set example property: " + value);
-	//}
 
 }

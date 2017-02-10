@@ -3,7 +3,6 @@ package com.kcwdev.audio;
 import java.io.IOException;
 
 import org.appcelerator.kroll.KrollDict;
-import org.appcelerator.kroll.KrollInvocation;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiC;
@@ -12,8 +11,6 @@ import org.appcelerator.titanium.TiContext.OnLifecycleEvent;
 import org.appcelerator.titanium.util.Log;
 import org.appcelerator.titanium.util.TiConfig;
 import org.appcelerator.titanium.util.TiConvert;
-
-
 import android.app.Activity;
 
 @Kroll.proxy(creatableInModule=AdvancedAudioPlayerModule.class)
@@ -40,17 +37,20 @@ public class AudioPlayerProxy extends KrollProxy
 		super(tiContext);
 
 		tiContext.addOnLifecycleEventListener(this);
-		setProperty("volume", 0.5, true);
+		setProperty("volume", 0.5);
 	}
 
 	@Override
 	public void handleCreationDict(KrollDict options) {
 		super.handleCreationDict(options);
 		if (options.containsKey(TiC.PROPERTY_URL)) {
-			setProperty(TiC.PROPERTY_URL, getTiContext().resolveUrl(null, TiConvert.toString(options, TiC.PROPERTY_URL)));
+			setProperty(TiC.PROPERTY_URL, resolveUrl(null, TiConvert.toString(options, TiC.PROPERTY_URL)));
 		}
 		if (options.containsKey(TiC.PROPERTY_ALLOW_BACKGROUND)) {
 			setProperty(TiC.PROPERTY_ALLOW_BACKGROUND, options.get(TiC.PROPERTY_ALLOW_BACKGROUND));
+		}
+		if(options.containsKey("speakerphone")) {
+			setProperty("speakerphone", TiConvert.toBoolean(options.get("speakerphone")));
 		}
 		if (DBG) {
 			Log.i(LCAT, "Creating audio player proxy for url: " + TiConvert.toString(getProperty("url")));
@@ -64,11 +64,25 @@ public class AudioPlayerProxy extends KrollProxy
 	}
 
 	@Kroll.setProperty @Kroll.method
-	public void setUrl(KrollInvocation kroll, String url) {
+	public void setUrl(String url) {
 		if (url != null) {
-			setProperty(TiC.PROPERTY_URL, kroll.getTiContext().resolveUrl(null, TiConvert.toString(url)));			
+			setProperty(TiC.PROPERTY_URL, resolveUrl(null, TiConvert.toString(url)));
 			release();
 			getSound();
+		}
+	}
+
+	/*
+	 * Exposed to Titanium so the app can switch between speaker modes.
+	 * This updates the property of our instance then tells the mediaplayer wrapper to
+	 * update the running speaker mode.
+	 */
+	@Kroll.setProperty @Kroll.method
+	public void setSpeakerphoneOn(boolean on) {
+		setProperty("speakerphone", TiConvert.toBoolean(on));
+		MediaPlayerWrapper s = getSound();
+		if (s != null) {
+			s.setSpeakerphoneOn();
 		}
 	}
 
@@ -152,6 +166,16 @@ public class AudioPlayerProxy extends KrollProxy
 		if (s != null) {
 			s.setTime(position);
 		}		
+	}
+	
+	@Kroll.method
+	public int getCurrentPosition() {
+		MediaPlayerWrapper s = getSound();
+		if (s != null) {
+			return s.getCurrentPosition();
+		} else {
+			return 0;
+		}
 	}
 
 	protected MediaPlayerWrapper getSound()

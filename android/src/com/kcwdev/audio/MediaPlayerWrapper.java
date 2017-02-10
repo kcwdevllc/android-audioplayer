@@ -64,6 +64,7 @@ public class MediaPlayerWrapper
 	protected KrollProxy proxy;
 	protected MediaPlayer mp;
 	protected float volume;
+	protected boolean speakerphone;
 	protected boolean playOnResume;
 	protected boolean remote;
 	protected Timer progressTimer;
@@ -88,7 +89,7 @@ public class MediaPlayerWrapper
 			mp = new MediaPlayer();
 			String url = TiConvert.toString(proxy.getProperty(TiC.PROPERTY_URL));
 			if (URLUtil.isAssetUrl(url)) {
-				Context context = proxy.getTiContext().getTiApp();
+				Context context = proxy.getActivity().getApplicationContext();
 				String path = url.substring(TiConvert.ASSET_URL.length());
 				AssetFileDescriptor afd = null;
 				try {
@@ -131,7 +132,9 @@ public class MediaPlayerWrapper
 					mp.setDataSource(url);
 				}
 			}
-
+			
+			setSpeakerphoneOn();
+			
 			mp.setLooping(looping);
 			mp.setOnCompletionListener(this);
 			mp.setOnErrorListener(this);
@@ -339,6 +342,35 @@ public class MediaPlayerWrapper
 
 		proxy.setProperty(TiC.PROPERTY_TIME, position);
 	}
+	
+	public void setSpeakerphoneOn() {		
+		if (mp != null) {
+			
+			Context context = proxy.getActivity().getBaseContext();
+			AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			
+			speakerphone = true; 
+			if(proxy.hasProperty("speakerphone")) {
+				speakerphone = TiConvert.toBoolean(proxy.getProperty("speakerphone"));
+			}
+			
+			if(speakerphone) {
+				mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+					am.setMode(AudioManager.STREAM_MUSIC);
+					am.setSpeakerphoneOn(true);				     
+				}
+				
+			} else {
+				mp.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+				if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+					am.setMode(AudioManager.MODE_IN_CALL);
+					am.setSpeakerphoneOn(false);
+				}
+				
+			}
+		}
+	}
 
 	private void setState(int state)
 	{
@@ -489,6 +521,15 @@ public class MediaPlayerWrapper
 		proxy.fireEvent(EVENT_BUFFERING, data);
 	}
 
+	public int getCurrentPosition() {
+		if (mp != null) {
+			return mp.getCurrentPosition();
+		} else {
+			return 0;
+		}
+	}
+	
+	
 	private void startProgressTimer()
 	{
 		if (progressTimer == null) {
